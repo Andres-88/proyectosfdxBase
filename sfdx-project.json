@@ -1,12 +1,9 @@
 {
-  "packageDirectories": [
-    {
-      "path": "force-app",
-      "default": true
-    }
+  "packageDirectories":  [
+    { "path": "./force-app", "default": true},
+    { "path" : "./force-app" }
   ],
-  "name": "proyectosfdxbase",
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
-  "sourceApiVersion": "52.0"
+  "sourceApiVersion": "51.0"
 }
