@@ -54,7 +54,12 @@ tree.write('package.xml', xml_declaration=True, encoding='utf-8')
 ########## comentar desde de aqui si solo se busca el XML#################################
 os.system("sfdx force:mdapi:retrieve -r ./ -u " + origen + " -k ./package.xml")
 
-os.listdir('./')
+
+print("Empiezo a listar ficheros")
+with os.scandir('./') as ficheros:
+    for fichero in ficheros:
+        print(fichero.name)
+print("Termino de listar ficheros")
 
 print("Inicio creacion UNPACKAGED")
 
