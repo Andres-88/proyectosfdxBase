@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import xml.etree.ElementTree as ET
-import zipfile
+import zipfile 
 
 # # Alias de la Org registrada con SFDX o Usuario que identifica la Org registrada con SFDX
 origen = sys.argv[1]
@@ -53,6 +53,8 @@ tree.write('package.xml', xml_declaration=True, encoding='utf-8')
 
 ########## comentar desde de aqui si solo se busca el XML#################################
 os.system("sfdx force:mdapi:retrieve -r ./ -u " + origen + " -k ./package.xml")
+
+os.listdir('./')
 
 print("Inicio creacion UNPACKAGED")
 
