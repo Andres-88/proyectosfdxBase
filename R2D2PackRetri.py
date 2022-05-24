@@ -54,6 +54,8 @@ tree.write('package.xml', xml_declaration=True, encoding='utf-8')
 ########## comentar desde de aqui si solo se busca el XML#################################
 os.system("sfdx force:mdapi:retrieve -r ./ -u " + origen + " -k ./package.xml")
 
+print("Inicio creacion UNPACKAGED")
+
 with zipfile.ZipFile("./unpackaged.zip", "r") as zip_ref:
     zip_ref.extractall("./")
 try:
@@ -71,4 +73,7 @@ try:
         os.system('rm -r ./unpackaged/uiObjectRelationConfigs/')
 except:
     print('uiObjectRelationConfigs no existe')
+
+print("FIN creacion UNPACKAGED")
+
 os.system("sfdx force:mdapi:convert --rootdir ./unpackaged --outputdir ./Salesforce")
