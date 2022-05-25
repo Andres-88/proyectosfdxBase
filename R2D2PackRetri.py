@@ -52,7 +52,7 @@ tree = ET.ElementTree(indent(root))
 tree.write('package.xml', xml_declaration=True, encoding='utf-8')
 
 ########## comentar desde de aqui si solo se busca el XML#################################
-os.system("sfdx force:mdapi:retrieve -r ./ -u " + origen + " -s -k ./package.xml")
+os.system("sfdx force:mdapi:retrieve -r ./ -u " + origen + " -k ./package.xml")
 
 
 print("Empiezo a listar ficheros")
