@@ -142,7 +142,7 @@ function listMetadataNames() {
         if [[ $isMetadataAll -eq 1 ]]; then
             echo "$$_"
         else
-            local listMetadataResult=$(echo $(sfdx force:mdapi:listmetadata  -u ${aliasOrg} -m ${metadataTypeName} --json) | jq '.result')
+            local listMetadataResult=$(echo $(sfdx force:mdapi:listmetadata -u ${aliasOrg} -m ${metadataTypeName} --json) | jq '.result')
             echo "$(convertListMetadata "${listMetadataResult}")"
         fi
     fi
@@ -213,6 +213,8 @@ function generatePackageXML() {
     local apiVersion=$1
 
     local describeMetadata=$(sfdx force:mdapi:describemetadata -u ${aliasOrg} | jq -r '.result.metadataObjects | .[] | "\(.xmlName) \(.inFolder)"' | tr '\r' ' ')
+
+    echo describeMetadata >&2
 
     echo '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
     echo '<Package xmlns="http://soap.sforce.com/2006/04/metadata">'
