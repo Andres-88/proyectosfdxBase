@@ -121,14 +121,14 @@ function listMetadataNames() {
         fi
 
         # list folders
-        local listMetadataFolderResult=$(echo $(sfdx force:mdapi:listmetadata -a ${apiVersion} -u ${aliasOrg} -m ${metadataTypeNameFolder} --json) | jq '.result')
+        local listMetadataFolderResult=$(echo $(sfdx force:mdapi:listmetadata -u ${aliasOrg} -m ${metadataTypeNameFolder} --json) | jq '.result')
         local listMetadataFolders=$(convertListMetadata "${listMetadataFolderResult}")
         local listMetadataAllFolderItems=""
         # loop through folders
         IFS=":" read -ra listMetadataFoldersArray <<<"${listMetadataFolders}"
         for folder in ${listMetadataFoldersArray[@]}; do
             # list folder items
-            local listMetadataFolderItemResult=$(echo $(sfdx force:mdapi:listmetadata -a ${apiVersion} -u ${aliasOrg} -m ${metadataTypeName} --folder ${folder} --json) | jq '.result')
+            local listMetadataFolderItemResult=$(echo $(sfdx force:mdapi:listmetadata -u ${aliasOrg} -m ${metadataTypeName} --folder ${folder} --json) | jq '.result')
             local listMetadataFolderItems="$(convertListMetadata "${listMetadataFolderItemResult}")"
             if [ "${listMetadataFolderItems}" != "" ]; then
                 listMetadataAllFolderItems="${listMetadataAllFolderItems}${listMetadataFolderItems}"
@@ -142,7 +142,7 @@ function listMetadataNames() {
         if [[ $isMetadataAll -eq 1 ]]; then
             echo "$$_"
         else
-            local listMetadataResult=$(echo $(sfdx force:mdapi:listmetadata -a ${apiVersion} -u ${aliasOrg} -m ${metadataTypeName} --json) | jq '.result')
+            local listMetadataResult=$(echo $(sfdx force:mdapi:listmetadata  -u ${aliasOrg} -m ${metadataTypeName} --json) | jq '.result')
             echo "$(convertListMetadata "${listMetadataResult}")"
         fi
     fi
@@ -212,7 +212,7 @@ function generatePackageXML() {
 
     local apiVersion=$1
 
-    local describeMetadata=$(sfdx force:mdapi:describemetadata -a ${apiVersion} -u ${aliasOrg} --json | jq -r '.result.metadataObjects | .[] | "\(.xmlName) \(.inFolder)"' | tr '\r' ' ')
+    local describeMetadata=$(sfdx force:mdapi:describemetadata -u ${aliasOrg})
 
     echo '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
     echo '<Package xmlns="http://soap.sforce.com/2006/04/metadata">'
