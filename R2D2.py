@@ -40,11 +40,13 @@ for i in data['metadataObjects']:
               i['xmlName'] + " -f ./data/" + i['xmlName'] + ".json -u"+origen)
 allmeta.close()
 
+#Creacion de carpeta
+os.system("mkdir packages")
+
 # Creacion del Archivo XML
-root = ET.Element(
-    'Package', {'xmlns': 'http://soap.sforce.com/2006/04/metadata'})
 for subdir, dirs, files in os.walk('./data'):
     for f in files:
+        root = ET.Element('Package', {'xmlns': 'http://soap.sforce.com/2006/04/metadata'})
         tipo = f.split('.')
         tipos = ET.SubElement(root, 'types')
         componentes = open('./data/'+f)
@@ -61,30 +63,21 @@ for subdir, dirs, files in os.walk('./data'):
             name = ET.SubElement(tipos, 'name')
             name.text = tipo[0]
             componentes.close()
+        version = ET.SubElement(root, 'version')
+        version.text = '50.0'
+        tree = ET.ElementTree(indent(root))
+        tree.write('packages/package'+name.text+'.xml', xml_declaration=True, encoding='utf-8')
 
-version = ET.SubElement(root, 'version')
-version.text = '50.0'
-tree = ET.ElementTree(indent(root))
-tree.write('package.xml', xml_declaration=True, encoding='utf-8')
+########## comentar desde de aqui si solo se buscan los XML#################################
+os.system("mkdir unpackages")
+for subdir, dirs, files in os.walk('./packages'):
+    for f in files:
+        os.system("sfdx force:mdapi:retrieve -r ./packages -u " + origen + " -k ./packages/" + f + " --verbose")
+        os.system("mv packages/unpackaged.zip unpackages/unpackaged"+f+".zip")
 
-########## comentar desde de aqui si solo se busca el XML#################################
-os.system("sfdx force:mdapi:retrieve -r ./ -u " + origen + " -k ./package.xml")
-
-with zipfile.ZipFile("./unpackaged.zip", "r") as zip_ref:
-    zip_ref.extractall("./")
-try:
-    if os.listdir('./unpackaged/audience/'):
-        os.system('rm -r ./unpackaged/audience/')
-except:
-    print('audience no existe')
-try:
-    if os.listdir('./unpackaged/customindex/'):
-        os.system('rm -r ./unpackaged/customindex/')
-except:
-    print('customindex no existe')
-try:
-    if os.listdir('./unpackaged/uiObjectRelationConfigs/'):
-        os.system('rm -r ./unpackaged/uiObjectRelationConfigs/')
-except:
-    print('uiObjectRelationConfigs no existe')
-os.system("sfdx force:mdapi:convert --rootdir ./unpackaged --outputdir ./Salesforce")
+for subdir, dirs, files in os.walk('./unpackages'):
+    for f in files:
+        with zipfile.ZipFile("./unpackages/"+f, "r") as zip_ref:
+            zip_ref.extractall("./unpackages")
+        os.system("sfdx force:mdapi:convert --rootdir ./unpackages/unpackaged --outputdir ./Salesforce")
+        os.system("rm -r ./unpackages/unpackaged")
