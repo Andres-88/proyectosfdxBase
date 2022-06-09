@@ -76,11 +76,15 @@ for subdir, dirs, files in os.walk('./data'):
 os.system("mkdir unpackages")
 for subdir, dirs, files in os.walk('./packages'):
     for f in files:
+        os.system("echo $f")
         os.system("sfdx force:mdapi:retrieve -r ./packages -u " + origen + " -k ./packages/" + f + " --verbose")
         os.system("mv packages/unpackaged.zip unpackages/unpackaged"+f+".zip")
 
+os.system("echo 'Inicio de MDAPI CONVERT'")
+
 for subdir, dirs, files in os.walk('./unpackages'):
     for f in files:
+        os.system("echo $f")
         with zipfile.ZipFile("./unpackages/"+f, "r") as zip_ref:
             zip_ref.extractall("./unpackages")
         convert()
