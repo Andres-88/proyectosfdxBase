@@ -27,6 +27,11 @@ def indent(elem, level=0):
             elem.tail = j
     return elem
 
+# Creacion de función para convertir con mdapi
+def convert():
+    os.system("sfdx force:mdapi:convert --rootdir ./unpackages/unpackaged --outputdir ./Salesforce")
+    os.system("rm -r ./unpackages/unpackaged")
+    time.sleep(1)
 
 # Listado de toda la metadata existente en la Org
 os.system("sfdx force:mdapi:describemetadata -f ./data/meta.json -u "+origen)
@@ -39,12 +44,6 @@ for i in data['metadataObjects']:
     os.system("sfdx force:mdapi:listmetadata -m " +
               i['xmlName'] + " -f ./data/" + i['xmlName'] + ".json -u"+origen)
 allmeta.close()
-
-# Creacion de función para convertir con mdapi
-def convert():
-    os.system("sfdx force:mdapi:convert --rootdir ./unpackages/unpackaged --outputdir ./Salesforce")
-    os.system("rm -r ./unpackages/unpackaged")
-    time.sleep(1)
 
 #Creacion de carpeta
 os.system("mkdir packages")
@@ -76,17 +75,20 @@ for subdir, dirs, files in os.walk('./data'):
 
 ########## comentar desde de aqui si solo se buscan los XML#################################
 os.system("mkdir unpackages")
+
+os.system("echo Inicio de MDAPI RETRIEVE")
+
 for subdir, dirs, files in os.walk('./packages'):
     for f in files:
-        os.system("echo $f")
+        os.system("echo " + f)
         os.system("sfdx force:mdapi:retrieve -r ./packages -u " + origen + " -k ./packages/" + f)
         os.system("mv packages/unpackaged.zip unpackages/unpackaged"+f+".zip")
 
-os.system("echo 'Inicio de MDAPI CONVERT'")
+os.system("echo Inicio de MDAPI CONVERT")
 
 for subdir, dirs, files in os.walk('./unpackages'):
     for f in files:
-        os.system("echo $f")
+        os.system("echo " + f)
         with zipfile.ZipFile("./unpackages/"+f, "r") as zip_ref:
             zip_ref.extractall("./unpackages")
         convert()
