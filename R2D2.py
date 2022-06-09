@@ -3,6 +3,7 @@ import sys
 import json
 import xml.etree.ElementTree as ET
 import zipfile
+import time
 
 # # Alias de la Org registrada con SFDX o Usuario que identifica la Org registrada con SFDX
 origen = sys.argv[1]
@@ -43,6 +44,7 @@ allmeta.close()
 def convert():
     os.system("sfdx force:mdapi:convert --rootdir ./unpackages/unpackaged --outputdir ./Salesforce")
     os.system("rm -r ./unpackages/unpackaged")
+    time.sleep(1)
 
 #Creacion de carpeta
 os.system("mkdir packages")
@@ -77,7 +79,7 @@ os.system("mkdir unpackages")
 for subdir, dirs, files in os.walk('./packages'):
     for f in files:
         os.system("echo $f")
-        os.system("sfdx force:mdapi:retrieve -r ./packages -u " + origen + " -k ./packages/" + f + " --verbose")
+        os.system("sfdx force:mdapi:retrieve -r ./packages -u " + origen + " -k ./packages/" + f)
         os.system("mv packages/unpackaged.zip unpackages/unpackaged"+f+".zip")
 
 os.system("echo 'Inicio de MDAPI CONVERT'")
