@@ -9,7 +9,6 @@ origen = sys.argv[1]
 
 # # Definicion de la identacion del archivo XML
 
-
 def indent(elem, level=0):
     i = "\n" + level*"  "
     j = "\n" + (level-1)*"  "
@@ -39,6 +38,11 @@ for i in data['metadataObjects']:
     os.system("sfdx force:mdapi:listmetadata -m " +
               i['xmlName'] + " -f ./data/" + i['xmlName'] + ".json -u"+origen)
 allmeta.close()
+
+# Creacion de función para convertir con mdapi
+def convert():
+    os.system("sfdx force:mdapi:convert --rootdir ./unpackages/unpackaged --outputdir ./Salesforce")
+    os.system("rm -r ./unpackages/unpackaged")
 
 #Creacion de carpeta
 os.system("mkdir packages")
@@ -79,5 +83,4 @@ for subdir, dirs, files in os.walk('./unpackages'):
     for f in files:
         with zipfile.ZipFile("./unpackages/"+f, "r") as zip_ref:
             zip_ref.extractall("./unpackages")
-        os.system("sfdx force:mdapi:convert --rootdir ./unpackages/unpackaged --outputdir ./Salesforce")
-        os.system("rm -r ./unpackages/unpackaged")
+        convert()
