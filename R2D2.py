@@ -68,7 +68,7 @@ for subdir, dirs, files in os.walk('./data'):
             name.text = tipo[0]
             componentes.close()
         version = ET.SubElement(root, 'version')
-        version.text = '50.0'
+        version.text = '52.0'
         tree = ET.ElementTree(indent(root))
         tree.write('packages/package'+name.text+'.xml', xml_declaration=True, encoding='utf-8')
 
