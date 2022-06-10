@@ -103,8 +103,6 @@ for subdir, dirs, files in os.walk('./data'):
             version.text = '52.0'
             tree = ET.ElementTree(indent(root))
             tree.write('packages/package'+name.text+'.xml', xml_declaration=True, encoding='utf-8')
-        
-
 
 ########## comentar desde de aqui si solo se buscan los XML#################################
 os.system("mkdir unpackages")
@@ -112,16 +110,18 @@ os.system("mkdir unpackages")
 os.system("echo Inicio de MDAPI RETRIEVE")
 
 for subdir, dirs, files in os.walk('./packages'):
-    for f in files:
-        os.system("echo " + f)
-        os.system("sfdx force:mdapi:retrieve -r ./packages -u " + origen + " -k ./packages/" + f)
+    for f in sorted(files):
+        print("--------------------------------------------")
+        print(f)
+        os.system("sfdx force:mdapi:retrieve -r ./packages -u " + origen + " -k ./packages/" + f + " --verbose")
         os.system("mv packages/unpackaged.zip unpackages/unpackaged"+f+".zip")
 
 os.system("echo Inicio de MDAPI CONVERT")
 
 for subdir, dirs, files in os.walk('./unpackages'):
-    for f in files:
-        os.system("echo " + f)
+    for f in sorted(files):
+        print("--------------------------------------------")
+        print(f)
         with zipfile.ZipFile("./unpackages/"+f, "r") as zip_ref:
             zip_ref.extractall("./unpackages")
         convert()
