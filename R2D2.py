@@ -111,8 +111,8 @@ os.system("echo Inicio de MDAPI RETRIEVE")
 
 for subdir, dirs, files in os.walk('./packages'):
     for f in sorted(files):
-        print("--------------------------------------------")
-        print(f)
+        os.system("echo --------------------------------------------")
+        os.system("echo " + f)
         os.system("sfdx force:mdapi:retrieve -r ./packages -u " + origen + " -k ./packages/" + f + " --verbose")
         os.system("mv packages/unpackaged.zip unpackages/unpackaged"+f+".zip")
 
@@ -120,8 +120,8 @@ os.system("echo Inicio de MDAPI CONVERT")
 
 for subdir, dirs, files in os.walk('./unpackages'):
     for f in sorted(files):
-        print("--------------------------------------------")
-        print(f)
-        with zipfile.ZipFile("./unpackages/"+f, "r") as zip_ref:
+        os.system("echo --------------------------------------------")
+        os.system("echo " + f)
+        with zipfile.ZipFile("./unpackages/" + f, "r") as zip_ref:
             zip_ref.extractall("./unpackages")
         convert()
